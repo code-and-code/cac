@@ -3,8 +3,8 @@ namespace Cac\Model;
 
 class Connection
 {
-    protected $db;
-    private   $config;
+    private $db;
+    private $config;
 
     public function __construct()
     {
@@ -12,7 +12,7 @@ class Connection
         $this->db  = $this->getDb();
     }
 
-    private function getDb()
+    public function getDb()
     {
         $db = new \PDO("mysql:host=".$this->config['host'].";dbname=".$this->config['dbname'],
                         $this->config['username'],

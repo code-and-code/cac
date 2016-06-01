@@ -3,15 +3,15 @@ namespace Cac\Model;
 
 abstract class Model extends Connection
 {
-    protected $table;
 
     /**
      * @return array
      */
+
     public function all()
     {
         $query = "SELECT * FROM {$this->table}";
-        return $this->db->query($query)->fetchAll();
+        return $this->getDb()->query($query)->fetchAll();
     }
 
     /**
@@ -20,7 +20,7 @@ abstract class Model extends Connection
      */
     public function find($id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id=:id");
+        $stmt = $this->getDb()->prepare("SELECT * FROM {$this->table} WHERE id=:id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         return $this->fill($stmt->fetch());
@@ -36,15 +36,14 @@ abstract class Model extends Connection
         $fieldsProtected  = ':' . implode(',:', array_keys($attributes));
 
         try{
-            $stmt   = $this->db->prepare("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
+            $stmt   = $this->getDb()->prepare("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
             $binds  = explode(',',$fields);
             foreach ($binds as $b)
             {
                 $stmt->bindParam(':'.$b, $attributes[$b]);
             }
             $stmt->execute();
-
-            return $this->fill($attributes);
+            $this->find($this->getDb()->lastInsertId());
 
         } catch (\PDOException $e) {
 
@@ -69,7 +68,7 @@ abstract class Model extends Connection
         $fieldsProtected  = implode(',',$temp);
 
         try{
-            $stmt   = $this->db->prepare("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
+            $stmt   = $this->getDb()->prepare("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
 
             $binds  = explode(',',$fields);
             foreach ($binds as $b)
@@ -93,7 +92,7 @@ abstract class Model extends Connection
     public function delete($id)
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id=:id");
+            $stmt = $this->getDb()->prepare("DELETE FROM {$this->table} WHERE id=:id");
             $stmt->bindParam(":id", $id);
             $stmt->execute();
             return true;
