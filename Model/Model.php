@@ -11,7 +11,7 @@ abstract class Model extends Connection
     public function all()
     {
         $query = "SELECT * FROM {$this->table}";
-        return $this->getDb()->query($query)->fetchAll();
+        return $this->dbquery($query)->fetchAll();
     }
 
     /**
@@ -20,7 +20,7 @@ abstract class Model extends Connection
      */
     public function find($id)
     {
-        $stmt = $this->getDb()->prepare("SELECT * FROM {$this->table} WHERE id=:id");
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id=:id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
         return $this->fill($stmt->fetch());
@@ -36,14 +36,14 @@ abstract class Model extends Connection
         $fieldsProtected  = ':' . implode(',:', array_keys($attributes));
 
         try{
-            $stmt   = $this->getDb()->prepare("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
+            $stmt   = $this->db->prepare("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
             $binds  = explode(',',$fields);
             foreach ($binds as $b)
             {
                 $stmt->bindParam(':'.$b, $attributes[$b]);
             }
             $stmt->execute();
-            $this->find($this->getDb()->lastInsertId());
+            return $this->find($this->db->lastInsertId());
 
         } catch (\PDOException $e) {
 
@@ -68,7 +68,7 @@ abstract class Model extends Connection
         $fieldsProtected  = implode(',',$temp);
 
         try{
-            $stmt   = $this->getDb()->prepare("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
+            $stmt   = $this->db->prepare("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
 
             $binds  = explode(',',$fields);
             foreach ($binds as $b)
@@ -92,7 +92,7 @@ abstract class Model extends Connection
     public function delete($id)
     {
         try {
-            $stmt = $this->getDb()->prepare("DELETE FROM {$this->table} WHERE id=:id");
+            $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id=:id");
             $stmt->bindParam(":id", $id);
             $stmt->execute();
             return true;
