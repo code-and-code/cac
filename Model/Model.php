@@ -5,22 +5,31 @@ abstract class Model extends Connection
 {
     protected $table;
 
+    /**
+     * @return array
+     */
     public function all()
     {
         $query = "SELECT * FROM {$this->table}";
         return $this->db->query($query)->fetchAll();
     }
 
-    
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function find($id)
     {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id=:id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        $result = $stmt->fetch();
-        return $result;
+        return $this->fill($stmt->fetch());
     }
 
+    /**
+     * @param array $attributes
+     * @return mixed|string
+     */
     public function create(array $attributes)
     {
         $fields           = implode(',', array_keys($attributes));
@@ -34,12 +43,20 @@ abstract class Model extends Connection
                 $stmt->bindParam(':'.$b, $attributes[$b]);
             }
             $stmt->execute();
-        } catch (Exception $e) {
+
+            return $this->fill($attributes);
+
+        } catch (\PDOException $e) {
 
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
 
+    /**
+     * @param array $attributes
+     * @param $id
+     * @return string
+     */
     public function update(array $attributes,$id)
     {
         $fields           = implode(',', array_keys($attributes));
@@ -63,13 +80,16 @@ abstract class Model extends Connection
             $stmt->bindParam(':id',$id);
             $stmt->execute();
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
 
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
 
-
+    /**
+     * @param $id
+     * @return bool|string
+     */
     public function delete($id)
     {
         try {
@@ -78,11 +98,28 @@ abstract class Model extends Connection
             $stmt->execute();
             return true;
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
 
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
 
+    }
+
+    /**
+     * @param array $attributes
+     * @return mixed
+     */
+    public function fill(array $attributes)
+    {
+        $name_class = get_class($this);
+        $class      = new $name_class();
+
+        foreach ($attributes as $key=>$attribute)
+        {
+            $class->$key = $attribute;
+        }
+
+        return $class;
     }
 
 }
