@@ -1,0 +1,15 @@
+{
+    "name": "codeandcode/cac",
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+
+    },
+    "authors": [
+        {
+            "name": "CodeAndCode",
+            "email": "contato@codeandcode.com.br"
+        }
+    ]
+}
