@@ -130,10 +130,10 @@ abstract class Model extends Connection
 
         foreach ($attributes as $attribute)
         {
-            $attributes[] = $this->$attribute;
+            $values[$attribute] = $this->$attribute;
         }
 
-        return $attributes;
+        return $values;
     }
 
     public function getAttributes()
