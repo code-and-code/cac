@@ -42,11 +42,14 @@ abstract class Model extends Connection
             {
                 $stmt->bindParam(':'.$b, $attributes[$b]);
             }
+            $this->db->beginTransaction();
             $stmt->execute();
+            $this->db->commit();
             return $this->find($this->db->lastInsertId());
 
         } catch (\PDOException $e) {
 
+            $this->db->rollback();
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
@@ -77,10 +80,13 @@ abstract class Model extends Connection
             }
 
             $stmt->bindParam(':id',$id);
+            $this->db->beginTransaction();
             $stmt->execute();
+            $this->db->commit();
 
         } catch (PDOException $e) {
 
+            $this->db->rollback();
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
@@ -138,7 +144,3 @@ abstract class Model extends Connection
     }
 
 }
-
-
-
-
