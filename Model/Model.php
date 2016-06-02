@@ -110,15 +110,31 @@ abstract class Model extends Connection
      */
     public function fill(array $attributes)
     {
-        $name_class = get_class($this);
-        $class      = new $name_class();
-
         foreach ($attributes as $key=>$attribute)
         {
-            $class->$key = $attribute;
+            $this->$key = $attribute;
         }
 
-        return $class;
+        return $this;
+    }
+
+    public function toArray()
+    {
+        $attributes = $this->getAttributes();
+
+        foreach ($attributes as $attribute)
+        {
+            $attributes[] = $this->$attribute;
+        }
+
+        return $attributes;
+    }
+
+    public function getAttributes()
+    {
+        $stmt = $this->db->prepare("DESCRIBE {$this->table}");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 
 }
