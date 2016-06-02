@@ -44,8 +44,12 @@ abstract class Model extends Connection
             }
             $this->db->beginTransaction();
             $stmt->execute();
+
+            $id = $this->db->lastInsertId();
+
             $this->db->commit();
-            return $this->find($this->db->lastInsertId());
+
+            return $this->find($id);
 
         } catch (\PDOException $e) {
 
