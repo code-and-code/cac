@@ -6,7 +6,7 @@ abstract class Model extends DataBase
     public function all()
     {
         $this->query("SELECT * FROM {$this->table}");
-        return $this->toObject($this->results());
+        return $this->results($this);
     }
 
     public function find($id)
@@ -14,7 +14,7 @@ abstract class Model extends DataBase
         $this->query("SELECT * FROM {$this->table} WHERE id=:id")
               ->bind(":id", $id);
 
-        return $this->fill($this->single());
+        return $this->single($this);
     }
 
     public function where(array $where)
@@ -22,7 +22,7 @@ abstract class Model extends DataBase
         $this->query("SELECT * FROM {$this->table} WHERE {$where[0]} {$where[1]}   :{$where[0]}")
              ->bind(":".$where[0],$where[2]);
 
-        return $this->toObject($this->results());
+        return $this->results($this);
     }
 
     public function create(array $attributes)
@@ -60,7 +60,7 @@ abstract class Model extends DataBase
 
     public function update(array $attributes)
     {
-        $attributes = $this->hasTimeStamps($attributes,'update');
+        $attributes = $this->hasTimeStamps($attributes,__METHOD__);
 
         $fields           = implode(',', array_keys($attributes));
         $fieldsProtected  = explode(',',implode(',', array_keys($attributes)));
@@ -113,17 +113,12 @@ abstract class Model extends DataBase
         }
     }
 
-    /**
-     * @param array $attributes
-     * @return mixed
-     */
     public function fill(array $attributes)
     {
         foreach ($attributes as $key=>$attribute)
         {
             $this->$key = $attribute;
         }
-
         return $this;
     }
 
@@ -148,28 +143,12 @@ abstract class Model extends DataBase
     public function hasTimeStamps(array $attributes,$action = null)
     {
         $date =  date('Y-m-d H:i:s');
-
         switch ($action)
         {
-            case 'update': $attributes['updated_at'] = $date;
+            case 'Cac\Model\Model::update': $attributes['updated_at'] = $date;
             break;
             default:       $attributes['created_at'] = $date;
         }
-
         return $attributes;
-    }
-
-    public function toObject(array $attributes)
-    {
-        foreach ($attributes as $attribute)
-        {
-             foreach ($this->getAttributes() as $column)
-             {
-                 $obj[$column] =$attribute[$column];
-             }
-             $new  = new $this();
-             $class[] = $new->fill($obj);
-        }
-        return $class;
     }
 }
