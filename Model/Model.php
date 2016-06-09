@@ -80,7 +80,7 @@ abstract class Model extends DataBase
                 $this->bind(':'.$b, $attributes[$b]);
             }
 
-            $this->bindParam(":id", $this->id)
+            $this->bind(":id", $this->id)
                  ->beginTransaction()
                  ->execute()
                  ->endTransaction();
