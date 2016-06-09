@@ -1,70 +1,67 @@
 <?php
 namespace Cac\Model;
 
-abstract class Model extends Connection
+abstract class Model extends DataBase
 {
-
-    /**
-     * @return array
-     */
-
     public function all()
     {
-        $query = "SELECT * FROM {$this->table}";
-        return $this->dbquery($query)->fetchAll();
+        $this->query("SELECT * FROM {$this->table}");
+        return $this->toObject($this->results());
     }
 
-    /**
-     * @param $id
-     * @return mixed
-     */
     public function find($id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id=:id");
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        return $this->fill($stmt->fetch());
+        $this->query("SELECT * FROM {$this->table} WHERE id=:id")
+              ->bind(":id", $id);
+
+        return $this->fill($this->single());
     }
 
-    /**
-     * @param array $attributes
-     * @return mixed|string
-     */
+    public function where(array $where)
+    {
+        $this->query("SELECT * FROM {$this->table} WHERE {$where[0]} {$where[1]}   :{$where[0]}")
+             ->bind(":".$where[0],$where[2]);
+
+        return $this->toObject($this->results());
+    }
+
     public function create(array $attributes)
     {
+        $attributes = $this->hasTimeStamps($attributes);
+
         $fields           = implode(',', array_keys($attributes));
         $fieldsProtected  = ':' . implode(',:', array_keys($attributes));
 
         try{
-            $stmt   = $this->db->prepare("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
+            $this->query("INSERT INTO {$this->table} ({$fields}) VALUES ({$fieldsProtected})");
             $binds  = explode(',',$fields);
+
             foreach ($binds as $b)
             {
-                $stmt->bindParam(':'.$b, $attributes[$b]);
+                $this->bind(':'.$b, $attributes[$b]);
             }
-            $this->db->beginTransaction();
-            $stmt->execute();
+            
+            $this->beginTransaction()
+                  ->execute();
 
-            $id = $this->db->lastInsertId();
+            $id = $this->lastInsertId();
 
-            $this->db->commit();
+            $this->endTransaction();
 
             return $this->find($id);
 
         } catch (\PDOException $e) {
 
-            $this->db->rollback();
+            $this->cancelTransaction();
+
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
 
-    /**
-     * @param array $attributes
-     * @param $id
-     * @return string
-     */
-    public function update(array $attributes,$id)
+    public function update(array $attributes)
     {
+        $attributes = $this->hasTimeStamps($attributes,'update');
+
         $fields           = implode(',', array_keys($attributes));
         $fieldsProtected  = explode(',',implode(',', array_keys($attributes)));
 
@@ -75,43 +72,45 @@ abstract class Model extends Connection
         $fieldsProtected  = implode(',',$temp);
 
         try{
-            $stmt   = $this->db->prepare("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
+            $this->query("UPDATE {$this->table} SET {$fieldsProtected} WHERE id=:id");
 
             $binds  = explode(',',$fields);
             foreach ($binds as $b)
             {
-                $stmt->bindParam(':'.$b, $attributes[$b]);
+                $this->bind(':'.$b, $attributes[$b]);
             }
 
-            $stmt->bindParam(':id',$id);
-            $this->db->beginTransaction();
-            $stmt->execute();
-            $this->db->commit();
+            $this->bindParam(":id", $this->id)
+                 ->beginTransaction()
+                 ->execute()
+                 ->endTransaction();
+           
+            return $this->find($this->id);
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
 
-            $this->db->rollback();
+            $this->cancelTransaction();
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
     }
 
-    /**
-     * @param $id
-     * @return bool|string
-     */
-    public function delete($id)
+    public function delete()
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id=:id");
-            $stmt->bindParam(":id", $id);
-            $stmt->execute();
+
+            $this->query("DELETE FROM {$this->table} WHERE id=:id")
+                 ->bind(":id", $this->id)
+                 ->beginTransaction()
+                 ->execute()
+                 ->endTransaction();
+
             return true;
 
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
 
+            $this->cancelTransaction();
             return  "Ocorreu um erro ao tentar executar esta ação, Mensagem: ".$e->getMessage() ;
         }
-
     }
 
     /**
@@ -142,9 +141,35 @@ abstract class Model extends Connection
 
     public function getAttributes()
     {
-        $stmt = $this->db->prepare("DESCRIBE {$this->table}");
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        return $this->query("DESCRIBE {$this->table}")
+                    ->nameColumns();
     }
 
+    public function hasTimeStamps(array $attributes,$action = null)
+    {
+        $date =  date('Y-m-d H:i:s');
+
+        switch ($action)
+        {
+            case 'update': $attributes['updated_at'] = $date;
+            break;
+            default:       $attributes['created_at'] = $date;
+        }
+
+        return $attributes;
+    }
+
+    public function toObject(array $attributes)
+    {
+        foreach ($attributes as $attribute)
+        {
+             foreach ($this->getAttributes() as $column)
+             {
+                 $obj[$column] =$attribute[$column];
+             }
+             $new  = new $this();
+             $class[] = $new->fill($obj);
+        }
+        return $class;
+    }
 }

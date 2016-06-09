@@ -8,6 +8,8 @@ abstract class Bootstrap
 
     public function __construct()
     {
+        date_default_timezone_set(get_config('timezone'));
+        
         $this->initRoutes();
         $this->run($this->getUrl());
     }
