@@ -15,7 +15,7 @@ class Auth extends Action
 
     public function getLogin()
     {
-        echo $this->render($this->viewLogin);
+        echo $this->render($this->config['viewLogin']);
     }
 
     public function postLogin()
@@ -26,7 +26,7 @@ class Auth extends Action
 
     public function getRegister()
     {
-        echo $this->render($this->viewRegister);
+        echo $this->render($this->class['viewRegister']);
     }
 
     public function postRegister()
@@ -44,7 +44,7 @@ class Auth extends Action
 
     public function auth(array $array)
     {
-        $class  = new $this->class();
+        $class  = new $this->config['class']();
 
         $result = $class->where('email','=',$array['email'])->andWhere('password','=',$array['password'])->first();
 
