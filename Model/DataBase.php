@@ -4,57 +4,42 @@ namespace Cac\Model;
 abstract class DataBase extends Connection
 {
     private $stmt;
+    private $params;
+    private $query;
 
     public function query($query)
     {
-        $this->stmt = $this->db->prepare($query);
+        $this->query= $this->query.$query;
+        $this->stmt = $this->db->prepare($this->query);
         return $this;
     }
 
-    public function bind($param, $value, $type = null)
+    public function bind($param, $value)
     {
-        if (is_null($type)) {
-            switch (true) {
-                case is_int($value):
-                    $type = \PDO::PARAM_INT;
-                    break;
-                case is_bool($value):
-                    $type = \PDO::PARAM_BOOL;
-                    break;
-                case is_null($value):
-                    $type = \PDO::PARAM_NULL;
-                    break;
-                default:
-                    $type = \PDO::PARAM_STR;
-            }
-        }
-        $this->stmt->bindValue($param, $value, $type);
-
+        $this->params[$param] = $value;
         return $this;
     }
 
     public function execute()
     {
-       $this->stmt->execute();
-       return $this;
+        $this->stmt->execute($this->params);
+        return $this->claerParams();
     }
 
     public function results($class = null)
     {
-        if(is_object($class))
-        {
+        if (is_object($class)) {
             return $this->execute()
-                    ->stmt->fetchAll(\PDO::FETCH_CLASS,get_class($class));
+                   ->stmt->fetchAll(\PDO::FETCH_CLASS, get_class($class));
         }
         return $this->execute()->stmt->fetchAll(\PDO::FETCH_OBJ);
     }
 
     public function single($class = null)
     {
-        if(is_object($class))
-        {
+        if (is_object($class)) {
             return $this->execute()
-                   ->stmt->fetchObject(get_class($class));
+                ->stmt->fetchObject(get_class($class));
         }
         return $this->execute()->stmt->fetch(\PDO::FETCH_OBJ);
     }
@@ -97,4 +82,10 @@ abstract class DataBase extends Connection
         return $this->execute()->stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 
+    private function claerParams()
+    {
+        $this->params = [];
+        return $this;
+    }
 }
+
