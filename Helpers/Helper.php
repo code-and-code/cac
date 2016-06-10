@@ -43,12 +43,26 @@ if (! function_exists('auth')) {
     function auth($name = null)
     {
         @session_start();
-        
+
         if(is_null($name))
         {
             return $_SESSION['auth'];
         }
         return $_SESSION['auth'][$name];
+    }
+}
+
+if (! function_exists('guest')) {
+
+    function guest()
+    {
+        @session_start();
+
+        if(isset($_SESSION['auth']))
+        {
+            return true;
+        }
+        return false;
     }
 }
 

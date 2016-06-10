@@ -33,8 +33,9 @@ abstract class Bootstrap
                     }
                     else
                     {
-                        //header("Location: /auth/login");
-                        echo 'Nedd Login';
+                        $config = get_config('auth','auth');
+                        header("Location:".$config['notauthorized']);
+
                     }
                 }
                 else

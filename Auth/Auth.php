@@ -6,6 +6,12 @@ use Cac\Controller\Action;
 
 class Auth extends Action
 {
+    private $config;
+
+    public function setConfig($name)
+    {
+        $this->config = get_config($name,'auth');
+    }
 
     public function getLogin()
     {
@@ -33,6 +39,7 @@ class Auth extends Action
     {
         @session_start();
         unset($_SESSION['auth']);
+        header("Location:".$this->config['notauthorized']);
     }
 
     public function auth(array $array)
@@ -44,7 +51,7 @@ class Auth extends Action
         if($result)
         {
             $this->sessionStar($result);
-            echo  'Login OK'.auth('email');
+            header("Location:".$this->config['redirect']);
         }
         else
         {
