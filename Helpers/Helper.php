@@ -38,6 +38,22 @@ if (! function_exists('config_exist')) {
     }
 }
 
+if (! function_exists('auth')) {
+
+    function auth($name = null)
+    {
+        @session_start();
+        
+        if(is_null($name))
+        {
+            return $_SESSION['auth'];
+        }
+        return $_SESSION['auth'][$name];
+    }
+}
+
+
+
 
 
 

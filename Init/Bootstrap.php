@@ -33,7 +33,8 @@ abstract class Bootstrap
                     }
                     else
                     {
-                        header("Location: /auth/login");
+                        //header("Location: /auth/login");
+                        echo 'Nedd Login';
                     }
                 }
                 else
@@ -62,9 +63,8 @@ abstract class Bootstrap
 
     protected function validation()
     {
-        session_start();
-        if(isset($_SESSION['auth']))
-        {
+        @session_start();
+        if(isset($_SESSION['auth'])){
             return true;
         }
     }

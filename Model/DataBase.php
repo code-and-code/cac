@@ -23,7 +23,9 @@ abstract class DataBase extends Connection
     public function execute()
     {
         $this->stmt->execute($this->params);
-        return $this->claerParams();
+        $this->claerParams();
+        $this->claerQuery();
+        return $this;
     }
 
     public function results($class = null)
@@ -85,6 +87,12 @@ abstract class DataBase extends Connection
     private function claerParams()
     {
         $this->params = [];
+        return $this;
+    }
+
+    private function claerQuery()
+    {
+        $this->query = '';
         return $this;
     }
 }
