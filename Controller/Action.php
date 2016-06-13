@@ -6,7 +6,6 @@ namespace Cac\Controller;
 class Action{
 
     protected $view;
-    protected $vars;
     protected $action;
     protected $srcView;
 
@@ -19,7 +18,7 @@ class Action{
     public function render($action,array $vars = null, $layout = true)
     {
         $this->action = $action;
-        $this->vars   = $vars;
+        $this->addVars($vars);
 
         $default =  get_config('layout')['default'];
 
@@ -57,9 +56,6 @@ class Action{
     {
         $class = get_class($this);
         $singleClassName = strtolower(str_replace('App\\Controllers\\','',$class));
-
-        $this->addVars($this->vars);
-
         include_once($this->srcView.$singleClassName.'/'.$this->action.'.phtml');
     }
 

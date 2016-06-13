@@ -26,7 +26,7 @@ class Auth extends Action
 
     public function getRegister()
     {
-        echo $this->render($this->class['viewRegister']);
+        echo $this->render($this->config['viewRegister']);
     }
 
     public function postRegister()
@@ -57,7 +57,13 @@ class Auth extends Action
         {
             echo 'Auth Fail';
         }
+    }
 
+    private function store($array)
+    {
+        $class  = new $this->config['class']();
+        $result = $class->create($array);
+        $this->auth($result->toArray());
     }
 
     private function sessionStar($object)
@@ -65,6 +71,4 @@ class Auth extends Action
         session_start();
         $_SESSION['auth'] = $object->toArray();
     }
-
-
 }
