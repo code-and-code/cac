@@ -58,13 +58,12 @@ class Action{
         }
     }
 
-    public function content()
+   public function content()
     {
-        $class = get_class($this);
-        $singleClassName = strtolower(str_replace('App\\Controllers\\','',$class));
-        include_once($this->srcView.$singleClassName.'/'.$this->action.'.phtml');
+        $action = str_replace(".","/",$this->action);
+        include_once($this->srcView.$action.'.phtml');
     }
-
+    
     private function validPublic()
     {
         $public =  get_config('public');
