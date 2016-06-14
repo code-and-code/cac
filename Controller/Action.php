@@ -96,5 +96,26 @@ class Action{
         }
         return $file;
     }
+    
+    public function validator_null(array $attributes, array $rules)
+    {
+       if(!empty($attributes) && !empty($rules)){
 
+           foreach ($attributes as $key=>$attribute)
+           {
+               if(in_array($key,$rules))
+               {
+                   if(empty($attribute) || is_null($attribute))
+                   {
+                       return false;
+                   }
+               }
+           }
+              return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
