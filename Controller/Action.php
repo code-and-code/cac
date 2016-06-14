@@ -8,11 +8,19 @@ class Action{
     protected $view;
     protected $action;
     protected $srcView;
+    protected $layout;
 
     public function __construct()
     {
         $this->view = new \stdClass();
         $this->validPublic();
+        $this->setLayout(get_config('layout')['default']);
+    }
+
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
+        return $this;
     }
 
     public function render($action,array $vars = null, $layout = true)
@@ -20,11 +28,9 @@ class Action{
         $this->action = $action;
         $this->addVars($vars);
 
-        $default =  get_config('layout')['default'];
+        if($layout == true && file_exists($this->srcView.$this->layout)){
 
-        if($layout == true && file_exists($this->srcView.$default)){
-
-            include_once($this->srcView.$default);
+            include_once($this->srcView.$this->layout);
 
         }else
         {
