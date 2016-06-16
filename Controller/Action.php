@@ -72,7 +72,7 @@ class Action{
         ($public == true) ? $this->srcView = "../App/views/{$folder}" : $this->srcView = "App/views/{$folder}";
     }
 
-    private function addVars($vars)
+    public function addVars($vars)
     {
         if(is_array($vars))
         {
