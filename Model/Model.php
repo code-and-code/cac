@@ -141,5 +141,36 @@ abstract class Model extends DataBase
     {
         return $this->single($this);
     }
+    
+        public function hasOne($class)
+    {
+        $class  = new $class();
+        $column = $this->columnRelationship($class);
+        $result = $class->where('id','=',$this->$column)->first();
+        return  $result;
+    }
+
+    public function hasMany($class)
+    {
+        $class  = new $class();
+        $column = $this->columnRelationship($this);
+        $result = $class->where($column,'=',$this->id)->get();
+        return  $result;
+    }
+
+    public function belongsTo($class)
+    {
+        $class  = new $class();
+        $column = $this->columnRelationship($class);
+        $result = $class->where('id','=',$this->$column)->first();
+        return  $result;
+    }
+
+    private function columnRelationship($class)
+    {
+        $name = explode('\\',get_class($class));
+        $name = strtolower(end($name)).'_id';
+        return $name;
+    }
 
 }
