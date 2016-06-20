@@ -10,9 +10,10 @@ return [
                         'password' =>  ''
         ],
 
-        'layout' =>  [ 'folder'   => '',
-                       'default'  => 'app.phtml',
-                       'tag'      => ['{','}']
+        'layout' =>  [ 'folder'    => '',
+                       'default'   => 'app.phtml',
+                       'tag'       => ['{','}'],
+                       'extension' => '.phtml'
         ]
 ];
 

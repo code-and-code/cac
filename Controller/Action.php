@@ -9,41 +9,42 @@ class Action{
     protected $action;
     protected $srcView;
 
+    private $folder;
+    private $twig;
+
     public function __construct()
     {
         $this->view = new \stdClass();
-        $this->validPublic();
+        $this->setFolder(config('app.layout.folder'));
     }
 
-    public function render($action,array $vars = null, $layout = true)
+    private function setFolder($folder)
     {
-        $this->action = $action;
-        $this->addVars($vars);
+        $this->folder = '../'.$folder;
+        $loader       = new \Twig_Loader_Filesystem($this->folder);
+        $this->twig   = new \Twig_Environment($loader, array());
+    }
 
-        $default =  get_config('layout')['default'];
-
-        if($layout == true && file_exists($this->srcView.$default)){
-
-            include_once($this->srcView.$default);
-
-        }else
-        {
-            $this->content();
-        }
+    public function render($action,array $vars = null)
+    {
+        $action = str_replace(".","/",$action);
+        return    $this->twig->render($action.config('app.layout.extension'), $vars);
     }
 
     public function maker($view, $vars = null,$html = false)
     {
-        if(file_exists($this->srcView.$view)){
+        $src = $this->validSrc();
+
+        if(file_exists($src.$view)){
 
             if($html == true)
             {
-                $view = file_get_contents($this->srcView.$view);
+                $view = file_get_contents($src.$view);
                 return $this->replaceTags($vars,$view);
             }else
             {
                 $this->addVars($vars);
-                return include_once($this->srcView.$view);
+                return include_once($src.$view);
             }
         }
         else
@@ -52,22 +53,15 @@ class Action{
         }
     }
 
-    public function content()
-    {
-        $class = get_class($this);
-        $singleClassName = strtolower(str_replace('App\\Controllers\\','',$class));
-        include_once($this->srcView.$singleClassName.'/'.$this->action.'.phtml');
-    }
+   private function validSrc()
+   {
+       $public =  config('app.public');
+       $folder =  config('app.layout.folder');
+       ($public == true) ? $src = "../{$folder}" : $src = $folder;
+       return $src;
+   }
 
-    private function validPublic()
-    {
-        $public =  get_config('public');
-        $folder =  get_config('layout')['folder'];
-
-        ($public == true) ? $this->srcView = "../App/views/{$folder}" : $this->srcView = "App/views/{$folder}";
-    }
-
-    private function addVars($vars)
+    public function addVars($vars)
     {
         if(is_array($vars))
         {
@@ -80,7 +74,7 @@ class Action{
 
     private function replaceTags($vars,$file)
     {
-        $tag = get_config('layout')['tag'];
+        $tag = config('app.layout.tag');
 
         if(is_array($vars))
         {
@@ -91,5 +85,4 @@ class Action{
         }
         return $file;
     }
-
 }

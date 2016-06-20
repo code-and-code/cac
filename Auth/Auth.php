@@ -10,7 +10,7 @@ class Auth extends Action
 
     public function setConfig($name)
     {
-        $this->config = get_config($name,'auth');
+        $this->config = config($name);
     }
 
     public function getLogin()

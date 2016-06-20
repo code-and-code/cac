@@ -20,6 +20,22 @@ if (! function_exists('get_config')) {
     }
 }
 
+if (! function_exists('config')) {
+
+    function config($name)
+    {
+        $name    = explode('.', $name);
+        $configs = config_exist(current($name));
+
+        unset($name[0]);
+        for($i =1;$i <= count($name)-1; $i++)
+        {
+            $configs = $configs[$name[$i]];
+        }
+        return $configs[end($name)];
+    }
+}
+
 if (! function_exists('config_exist')) {
 
     function config_exist($config)
@@ -66,15 +82,19 @@ if (! function_exists('guest')) {
     }
 }
 
+if (! function_exists('viewPath')) {
 
+    function viewPath($name = null)
+    {
+        $extension = config('app.layout.extension');
+        
+        $base = __DIR__.'../../../../App/views/';
+        $view = str_replace('.','/',$name);
 
-
-
-
-
-
-
-
-
-
-
+        if(is_null($name))
+        {
+            return $base;
+        }
+        return $base.$view.$extension;
+    }
+}

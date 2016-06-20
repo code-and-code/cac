@@ -11,7 +11,7 @@ abstract class Bootstrap
 
     public function __construct()
     {
-        date_default_timezone_set(get_config('timezone'));
+        date_default_timezone_set(config('app.timezone'));
         $this->action = new Action();
 
         
@@ -47,7 +47,7 @@ abstract class Bootstrap
                     }
                     else
                     {
-                        $config = get_config('auth','auth');
+                        $config = config('auth.auth');
                         header("Location:".$config['notauthorized']);
 
                     }
