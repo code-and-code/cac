@@ -1,9 +1,9 @@
 <?php
-
 namespace Cac\Controller;
 
+use Cac\TwigHelper\TwigFunction;
 
-class Action{
+class Action {
 
     protected $view;
     protected $action;
@@ -21,14 +21,25 @@ class Action{
     private function setFolder($folder)
     {
         $this->folder = '../'.$folder;
-        $loader       = new \Twig_Loader_Filesystem($this->folder);
-        $this->twig   = new \Twig_Environment($loader, array());
+        $this->twig   = new \Twig_Loader_Filesystem($this->folder);
+
     }
 
-    public function render($action,array $vars = null)
+    private function init($reload)
     {
+        $this->twig   = new \Twig_Environment($this->twig,
+            ['cache'       => '../../../storage/compilation_cache',
+             'auto_reload' => $reload]);
+
+        $this->twig->addExtension(new TwigFunction() ) ;
+    }
+
+    public function render($action,array $vars = [],$reload = true)
+    {
+        $this->init($reload);
+
         $action = str_replace(".","/",$action);
-        return    $this->twig->render($action.config('app.layout.extension'), $vars);
+        return  $this->twig->render($action.config('app.layout.extension'), $vars);
     }
 
     public function maker($view, $vars = null,$html = false)
@@ -53,13 +64,13 @@ class Action{
         }
     }
 
-   private function validSrc()
-   {
-       $public =  config('app.public');
-       $folder =  config('app.layout.folder');
-       ($public == true) ? $src = "../{$folder}" : $src = $folder;
-       return $src;
-   }
+    private function validSrc()
+    {
+        $public =  config('app.public');
+        $folder =  config('app.layout.folder');
+        ($public == true) ? $src = "../{$folder}" : $src = $folder;
+        return $src;
+    }
 
     public function addVars($vars)
     {
