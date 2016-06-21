@@ -12,9 +12,10 @@ class TwigFunction extends \Twig_Extension {
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('auth',  [$this, 'getAuth']),
+            new \Twig_SimpleFunction('auth',  [$this, 'getAuth' ]),
             new \Twig_SimpleFunction('guest', [$this, 'getGuest']),
-            new \Twig_SimpleFunction('view',  [$this, 'getView'])
+            new \Twig_SimpleFunction('view',  [$this, 'getView' ]),
+            new \Twig_SimpleFunction('limit', [$this, 'getLimit']),
         ];
     }
 
@@ -36,5 +37,11 @@ class TwigFunction extends \Twig_Extension {
     {
         $name = str_replace('.','/',$name);
         return $name.config('app.layout.extension');
+    }
+
+    public function getLimit($string,$start = 0,$end =50)
+    {
+        $string = substr($string,$start,$end);
+        return $string.'...';
     }
 }
