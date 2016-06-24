@@ -86,6 +86,6 @@ abstract class Bootstrap
 
     protected function notFound($msg)
     {
-        echo $this->action->maker('errors/routenotfound.phtml', ['msg' => $msg],true);
+         echo $this->action->render('errors/routenotfound', ['msg' => $msg]);
     }
 }
