@@ -11,7 +11,7 @@ class Action {
 
     private function setFolder($folder)
     {
-        $this->folder = '../'.$folder;
+        $this->folder = $folder;
         $this->twig   = new \Twig_Loader_Filesystem($this->folder);
     }
 
