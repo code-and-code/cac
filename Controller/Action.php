@@ -36,7 +36,7 @@ class Action {
         $this->setFolder(config('app.layout.folder'));
 
         $this->twig   = new \Twig_Environment($this->twig,
-            ['cache'       => '../../../storage/compilation_cache',
+            ['cache'       => config('app.layout.cache'),
              'auto_reload' => $reload]);
 
         $this->twigAddExtension();
@@ -52,8 +52,7 @@ class Action {
     public function render($action,array $vars = [],$reload = true)
     {
         $this->init($reload);
-
         $action = str_replace(".","/",$action);
-        return  $this->twig->render($action.config('app.layout.extension'), $vars);
+        echo $this->twig->render($action.config('app.layout.extension'), $vars);
     }
 }
