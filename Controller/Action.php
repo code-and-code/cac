@@ -53,6 +53,6 @@ class Action {
     {
         $this->init($reload);
         $action = str_replace(".","/",$action);
-        echo $this->twig->render($action.config('app.layout.extension'), $vars);
+        return  $this->twig->render($action.config('app.layout.extension'), $vars);
     }
 }
