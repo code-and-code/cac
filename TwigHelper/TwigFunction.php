@@ -42,6 +42,6 @@ class TwigFunction extends \Twig_Extension {
     public function getLimit($string,$start = 0,$end =50)
     {
         $string = substr($string,$start,$end);
-        return $string.'...';
+        return $string;
     }
 }
