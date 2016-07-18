@@ -134,13 +134,15 @@ abstract class Model extends DataBase
         $result = $class->where($column,'=',$this->id)->get();
         return  $result;
     }
+
     public function belongsTo($class)
     {
         $class  = new $class();
-        $column = $this->columnRelationship($class);
-        $result = $class->where('id','=',$this->$column)->first();
+        $column = $this->columnRelationship($this);
+        $result = $class->where($column,'=',$this->id)->first();
         return  $result;
     }
+
     private function columnRelationship($class)
     {
         $name = explode('\\',get_class($class));
