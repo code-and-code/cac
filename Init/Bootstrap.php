@@ -8,13 +8,13 @@ abstract class Bootstrap
 {
     private $routes;
     private $action;
+    private $not;
 
     public function __construct()
     {
         date_default_timezone_set(config('app.timezone'));
         $this->action = new Action();
 
-        
         $this->initRoutes();
         $this->run($this->getUrl());
     }
@@ -25,47 +25,52 @@ abstract class Bootstrap
     {
         array_walk($this->routes, function($route) use ($url){
 
-            if($url['path'] == $route['route']){
-
-               if(isset($route['method']))
+            if($url->path == $route->route){
+               if(isset($route->method))
                {
-                   if($url['method']!= $route['method'])
+                   if($url->method!= $route->method)
                    {
-                      $msg = "Rota <b>{$url['path']}</b> Precisa precisa ser acessada pelo REQUEST_METHOD = <b>{$route['method']}</b>";
+                      $msg = "Rota <b>{$url->path}</b> Precisa precisa ser acessada pelo REQUEST_METHOD = <b>{$route->method}</b>";
                       return $this->notFound($msg);
                    }
                }
 
-               if(isset($route['auth']) && $route['auth'])
+               if(isset($route->auth) && $route->auth)
                 {
                     if($this->validation() == true)
                     {
-                        $class = "App\\Controllers\\".ucfirst($route['controller']);
-                        $controller = new $class;
-                        $controller->$route['action']();
-
+                        $this->runMethod($route->controller,$route->action);
                     }
                     else
                     {
                         $config = config('auth.auth');
                         header("Location:".$config['notauthorized']);
-
                     }
+                    $this->not--;
                 }
                 else
                 {
-                    $class = "App\\Controllers\\".ucfirst($route['controller']);
-                    $controller = new $class;
-                    $controller->$route['action']();
-                }
+                    $this->runMethod($route->controller,$route->action);
 
+                }
+            $this->not--;
            }
+           else
+            {
+                $this->not++;
+            }
         });
+
+        if(count((array)$this->routes) ===$this->not++)
+        {
+            $msg = "URL <b>{$url->path}</b> Not Found <b>404</b>";
+            $this->notFound($msg);
+        }
     }
 
     protected function setRoutes($routes)
     {
-        $this->routes = $routes;
+        $this->routes = arrayToObject($routes);
     }
 
     protected function getUrl()
@@ -73,7 +78,8 @@ abstract class Bootstrap
         $url             = parse_url($_SERVER['REQUEST_URI']);
         $url['method']   = $_SERVER['REQUEST_METHOD'];
         $url['notfound'] = true;
-        return $url;
+
+        return arrayToObject($url);
     }
 
     protected function validation()
@@ -86,6 +92,21 @@ abstract class Bootstrap
 
     protected function notFound($msg)
     {
-         echo $this->action->render('errors/routenotfound', ['msg' => $msg]);
+         echo $msg;
     }
+
+   protected function runMethod($class,$method)
+   {
+      if (!method_exists($this->getClass($class),$method)){
+
+          echo 'Method not found';
+      }
+      call_user_func_array([$this->getClass($class),$method],[]);
+  }
+
+  protected function getClass($name)
+  {
+     $class = "App\\Controllers\\".ucfirst($name);
+     return new $class;
+  }
 }
