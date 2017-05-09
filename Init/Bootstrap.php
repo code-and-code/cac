@@ -30,7 +30,7 @@ abstract class Bootstrap
                {
                    if($url->method!= $route->method)
                    {
-                      $msg = "Rota <b>{$url->path}</b> Precisa precisa ser acessada pelo REQUEST_METHOD = <b>{$route->method}</b>";
+                      $msg = "Metodo <b>{$url->path}</b> nao e permitido por essa requicao HTTP. <b>Error 401</b>";
                       return $this->notFound($msg);
                    }
                }
@@ -63,7 +63,7 @@ abstract class Bootstrap
 
         if(count((array)$this->routes) ===$this->not++)
         {
-            $msg = "URL <b>{$url->path}</b> Not Found <b>404</b>";
+            $msg = "Pagina <b>{$url->path}</b> nao encontrada. <b> Error 404 </b>";
             $this->notFound($msg);
         }
     }
