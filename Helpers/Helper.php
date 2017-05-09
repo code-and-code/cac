@@ -56,15 +56,10 @@ if (! function_exists('config_exist')) {
 
 if (! function_exists('auth')) {
 
-    function auth($name = null)
+    function auth()
     {
         @session_start();
-
-        if(is_null($name))
-        {
-            return $_SESSION['auth'];
-        }
-        return $_SESSION['auth'][$name];
+        return getAuthUser($_SESSION['auth']['id']);
     }
 }
 
@@ -120,4 +115,15 @@ if (! function_exists('arrayToObject')) {
         }
     }
 }
+
+if (! function_exists('getAuthUser')) {
+
+    function getAuthUser($id) {
+
+        $class = config('auth.auth.class');
+        $user  = new $class;
+        return $user->find($id);
+    }
+}
+
 
