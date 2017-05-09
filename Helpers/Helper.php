@@ -116,6 +116,21 @@ if (! function_exists('arrayToObject')) {
     }
 }
 
+
+if (! function_exists('objectToArray')) {
+
+    function objectToArray($obj) {
+        if (!is_object($obj)) {
+            return $obj;
+        }
+        foreach ($obj as $key=>$attribute) {
+            $values[$key] = $attribute;
+        }
+        return $values;
+    }
+}
+
+
 if (! function_exists('getAuthUser')) {
 
     function getAuthUser($id) {
