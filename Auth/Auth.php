@@ -21,6 +21,7 @@ class Auth extends Action
     public function postLogin()
     {
         $request = $_REQUEST;
+        $request['password'] = md5($request['password']);
         return $this->auth($request);
     }
 
@@ -32,6 +33,7 @@ class Auth extends Action
     public function postRegister()
     {
         $request = $_REQUEST;
+        $request['password'] = md5($request['password']);
         $this->store($request);
     }
 
@@ -45,8 +47,7 @@ class Auth extends Action
     public function auth(array $array)
     {
         $class  = new $this->config['class']();
-
-        $result = $class->where('email','=',$array['email'])->andWhere('password','=',$array['password'])->first();
+        $result = $class->where('email','=',$array['email'])->andWhere('password','=', $array['password'])->first();
 
         if($result)
         {
