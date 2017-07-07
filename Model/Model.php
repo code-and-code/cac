@@ -40,7 +40,7 @@ abstract class Model extends DataBase
             $this->execute();
             return $this->find($this->lastInsertId());
         } catch (\PDOException $e) {
-            die( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
         }
     }
     public function update(array $attributes)
@@ -62,7 +62,7 @@ abstract class Model extends DataBase
                 ->execute();
             return $this->find($this->id);
         } catch (\PDOException $e) {
-            die( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
         }
     }
     public function delete()
@@ -76,7 +76,7 @@ abstract class Model extends DataBase
             return true;
         } catch (\PDOException $e) {
             $this->cancelTransaction();
-            die( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
         }
     }
     public function fill(array $attributes)
