@@ -1,11 +1,10 @@
 <?php
 namespace Cac\Model;
-use Cac\Support\Log;
+
+use Cac\Exception\ModelException;
 
 abstract class Model extends DataBase
 {
-    private $msgErrorLog = "Ocorreu um erro ao tentar executar esta ação, Mensagem: ";
-
     public function all()
     {
         $this->query("SELECT * FROM {$this->table}");
@@ -45,8 +44,7 @@ abstract class Model extends DataBase
             return $this->find($this->lastInsertId());
         } catch (\PDOException $e) {
 
-            Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
-            throw new \Exception($e->getMessage());
+            throw new ModelException($e->getMessage(),null);
         }
     }
     public function update(array $attributes)
@@ -69,8 +67,7 @@ abstract class Model extends DataBase
             return $this->find($this->id);
         } catch (\PDOException $e) {
 
-           Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
-           throw new \Exception($e->getMessage());;
+            throw new ModelException($e->getMessage(),null);
         }
     }
     public function delete()
@@ -85,8 +82,8 @@ abstract class Model extends DataBase
         } catch (\PDOException $e) {
 
             $this->cancelTransaction();
-            Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
-            throw new \Exception($e->getMessage());
+
+            throw new ModelException($e->getMessage(),null);
         }
     }
     public function fill(array $attributes)
