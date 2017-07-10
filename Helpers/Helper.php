@@ -142,3 +142,72 @@ if (! function_exists('getAuthUser')) {
 }
 
 
+if (! function_exists('alert')) {
+
+    function alert($type,$text, $url=null) {
+
+        if (!session_id()) @session_start();
+
+        // Instantiate the class
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        $msg->$type($text,$url);
+    }
+}
+
+if (! function_exists('hasErrors')) {
+
+    function hasErrors() {
+
+        if (!session_id()) @session_start();
+        // Instantiate the class
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        return $msg->hasErrors() ? true : false;
+    }
+}
+
+if (! function_exists('hasMessages')) {
+
+    function hasMessages() {
+
+        if (!session_id()) @session_start();
+        // Instantiate the class
+
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        return $msg->hasMessages() ? true : false;
+    }
+}
+
+if (! function_exists('display')) {
+
+    function display() {
+
+        if (!session_id()) @session_start();
+        // Instantiate the class
+        $msg = new \Plasticbrain\FlashMessages\FlashMessages();
+        return $msg->display();
+    }
+}
+
+if (! function_exists('back')) {
+
+    function back($alert = null,$type = 'success') {
+
+        if(!is_null($alert)){
+
+            alert($type,$alert);
+        }
+        header("Location:{$_SERVER['HTTP_REFERER']}");
+    }
+}
+
+if (! function_exists('redirect')) {
+
+    function redirect($url, $alert = null,$type = 'success') {
+
+        if(!is_null($alert)){
+
+            alert($type,$alert);
+        }
+        header("Location:{$url}");
+    }
+}
