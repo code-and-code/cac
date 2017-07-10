@@ -12,7 +12,7 @@ class Log
         self::$file     = config('app.log.file');
     }
 
-    private static function getFile()
+    public static function getFile()
     {
         self::init();
         return self::$folder ."/".self::$file;
