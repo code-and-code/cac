@@ -2,6 +2,8 @@
 
 namespace Cac\TwigHelper;
 
+use Cac\Support\Cache;
+
 class TwigFunction extends \Twig_Extension {
 
     public function getName()
@@ -16,6 +18,9 @@ class TwigFunction extends \Twig_Extension {
             new \Twig_SimpleFunction('guest', [$this, 'getGuest']),
             new \Twig_SimpleFunction('view',  [$this, 'getView' ]),
             new \Twig_SimpleFunction('limit', [$this, 'getLimit']),
+            new \Twig_SimpleFunction('hasErrors', [$this, 'getHasErrors']),
+            new \Twig_SimpleFunction('hasMessages', [$this, 'getHasMessages']),
+            new \Twig_SimpleFunction('display', [$this, 'getDisplay'])
         ];
     }
 
@@ -43,5 +48,20 @@ class TwigFunction extends \Twig_Extension {
     {
         $string = substr($string,$start,$end);
         return $string;
+    }
+
+    public function getHasErrors()
+    {
+       return hasErrors();
+    }
+
+    public function getHasMessages()
+    {
+       return hasMessages();
+    }
+
+    public function getDisplay()
+    {
+        return display();
     }
 }
