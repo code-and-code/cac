@@ -1,7 +1,11 @@
 <?php
 namespace Cac\Model;
+use Cac\Support\Log;
+
 abstract class Model extends DataBase
 {
+    private $msgErrorLog = "Ocorreu um erro ao tentar executar esta ação, Mensagem: ";
+
     public function all()
     {
         $this->query("SELECT * FROM {$this->table}");
@@ -40,7 +44,9 @@ abstract class Model extends DataBase
             $this->execute();
             return $this->find($this->lastInsertId());
         } catch (\PDOException $e) {
-            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+
+            Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
+            throw new \Exception($e->getMessage());
         }
     }
     public function update(array $attributes)
@@ -62,7 +68,9 @@ abstract class Model extends DataBase
                 ->execute();
             return $this->find($this->id);
         } catch (\PDOException $e) {
-            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+
+           Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
+           throw new \Exception($e->getMessage());;
         }
     }
     public function delete()
@@ -75,8 +83,10 @@ abstract class Model extends DataBase
                 ->endTransaction();
             return true;
         } catch (\PDOException $e) {
+
             $this->cancelTransaction();
-            throw new \Exception( "Ocorreu um erro ao tentar executar esta ação, Mensagem: " . $e->getMessage());
+            Log::logMsg("{$this->msgErrorLog} {$e->getMessage() }",'error');
+            throw new \Exception($e->getMessage());
         }
     }
     public function fill(array $attributes)
