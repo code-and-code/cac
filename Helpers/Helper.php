@@ -196,7 +196,17 @@ if (! function_exists('back')) {
 
             alert($type,$alert);
         }
-        header("Location:{$_SERVER['HTTP_REFERER']}");
+
+        if (!empty($_SERVER['HTTP_REFERER']))
+        {
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        else{
+
+            $url          = parse_url($_SERVER['REQUEST_URI']);
+            $current_url  = next(explode('/',$url['path']));
+            redirect("/{$current_url}");
+        }
     }
 }
 
