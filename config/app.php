@@ -27,5 +27,9 @@ return [
     'log'  => [ 'file' => 'main.log',
                'folder' => '../storage/log',
     ]
+    
+     'providers'=> [
+                   
+    ]
 ];
 
