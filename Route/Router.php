@@ -107,7 +107,7 @@ class Router {
 
     protected static function getClass($name,$class)
     {
-        $class = $name.ucfirst($class);
+        $class = $name.'\\'.ucfirst($class);
         return new $class;
     }
 }
