@@ -1,6 +1,6 @@
 <?php namespace Cac\Exception;
 
-class ValidationException extends \Exception
+class ValidationException extends LogException
 {
     public function __construct($message, $code = 0, \Exception $previous = null) {
 
