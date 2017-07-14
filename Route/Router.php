@@ -5,10 +5,8 @@ namespace Cac\Route;
 
 class Router {
 
-    private static $routes = array();
-
-    private function __construct() {}
-    private function __clone() {}
+    public static $routes  = array();
+    public static $layouts = array();
 
     public static function route($pattern) {
 
@@ -21,7 +19,6 @@ class Router {
     {
         $pattern['method'] = 'GET';
         self::route($pattern);
-
     }
 
     public static function post($pattern)
@@ -50,34 +47,35 @@ class Router {
 
                 if(isset($config->auth) && $config->auth)
                 {
-                    if(self::validation() == true)
+                    if(self::validation() != true)
                     {
                         self::runMethod($config->namespace,$config->controller,$config->action,$params);
                     }
                     else
                     {
-                        //$config = config('auth.auth');
-                        //header("Location:".$config['notauthorized']);
+                        $config = config('auth.auth');
+                        redirect($config['notauthorized']);
                     }
                 }
                 else
                 {
-                    self::runMethod($config->namespace,$config->controller,$config->action,$params);
+                    return self::runMethod($config->namespace,$config->controller,$config->action,$params);
 
                 }
             }else
             {
-                self::notFound("Pagina <b>{$url->path}</b> nao encontrada. <b> Error 404 </b>");
+                $url->notfound = true;
             }
         }
 
+        if($url->notfound)  self::notFound("Pagina <b>{$url->path}</b> nao encontrada. <b> Error 404 </b>");
     }
 
     protected static function url()
     {
         $url             = parse_url($_SERVER['REQUEST_URI']);
         $url['method']   = $_SERVER['REQUEST_METHOD'];
-        $url['notfound'] = true;
+        $url['notfound'] = false;
 
         return arrayToObject($url);
     }
@@ -103,7 +101,7 @@ class Router {
         }
         else
         {
-            call_user_func_array([self::getClass($name,$class),$method],$params);
+            return call_user_func_array([self::getClass($name,$class),$method],$params);
         }
     }
 
