@@ -127,10 +127,10 @@ abstract class Model extends DataBase
         return $this->single($this);
     }
 
-    public function hasOne($class)
+    public function hasOne($class, $column = null)
     {
         $class  = new $class();
-        $column = $this->columnRelationship($class);
+        (is_null($column))   ? $column  = $this->columnRelationship($class) : $column = $column;
         $result = $class->where('id','=',$this->$column)->first();
         return  $result;
     }
