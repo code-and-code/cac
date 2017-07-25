@@ -47,7 +47,7 @@ class Router {
 
                 if(isset($config->auth) && $config->auth)
                 {
-                    if(self::validation() != true)
+                    if(self::validation() == true)
                     {
                         self::runMethod($config->namespace,$config->controller,$config->action,$params);
                     }
