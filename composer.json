@@ -1,23 +1,43 @@
 {
     "name": "codeandcode/micro-fwk",
-    "keywords": ["start", "php", "projecto inical","project start"],
-    "type": "project",
+    "keywords": ["micro-fwk", "framework", "start"],
+    "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/code-and-code/micro-fwk",
+    "support": {
+        "forum": "https://github.com/code-and-code/micro-fwk"
+    },
     "require": {
         "php": ">=5.3",
         "twig/twig": "~1.0",
         "codeguy/upload": "^1.3",
         "phpmailer/phpmailer": "^5.2",
         "desarrolla2/cache":  "~2.0",
-         "plasticbrain/php-flash-messages": "^1.0"
+        "plasticbrain/php-flash-messages": "^1.0"
     },
+    "autoload":
+    {
+        "psr-4": {
+            "Cac\\": " "
+        },
+        "files":
+        [
+            "Helpers/Helper.php"
+        ]
+    },
+
     "require-dev": {
 
     },
+
     "authors": [
         {
-            "name": "CodeAndCode",
+            "name": "Code&Code",
             "email": "contato@codeandcode.com.br"
+        },
+        {
+            "name": "Angelo Biscola",
+            "email": "angelo@codeandcode.com.br"
         }
     ]
 } 
