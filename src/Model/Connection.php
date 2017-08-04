@@ -8,7 +8,8 @@ class Connection
 
     public function __construct()
     {
-        $this->getDb(config('app.database'));
+        //$this->getDb(config('app.database'));
+        $this->db = MysqlConnection::connect(config('app.database'));
     }
 
     private function getDb(array $config)
