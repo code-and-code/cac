@@ -22,7 +22,7 @@
         },
         "files":
         [
-            "Helpers/Helper.php"
+            "src/Helpers/Helper.php"
         ]
     },
 
