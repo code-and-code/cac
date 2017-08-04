@@ -2,9 +2,13 @@
 
 namespace Cac\Provider;
 
-interface ServiceProvider
-{
+use Cac\Interfaces\Provider;
+use Cac\Support\Cache;
 
-    public function boot();
-    public function mapRoutes();
+abstract class ServiceProvider implements Provider
+{
+    private function loadViewsFrom($path, $namespace)
+    {
+       return Cache::set($namespace,$path);
+    }
 }
