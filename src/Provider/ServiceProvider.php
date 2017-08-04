@@ -7,7 +7,7 @@ use Cac\Support\Cache;
 
 abstract class ServiceProvider implements Provider
 {
-    private function loadViewsFrom($path, $namespace)
+    protected function loadViewsFrom($path, $namespace)
     {
        return Cache::set($namespace,$path);
     }
