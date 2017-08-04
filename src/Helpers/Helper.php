@@ -42,17 +42,18 @@ if (! function_exists('config_exist')) {
     {
         $name = $config.".php";
 
-        if(!file_exists(__DIR__."/../../../../App/config/{$name}"))
+        if(!file_exists(__DIR__."/../../../../../App/config/{$name}"))
         {
             throw  new Exception("File {$name} not found in Path App/config");
         }
         else
         {
-            $config = include(__DIR__."/../../../../App/config/{$name}");
+            $config = include(__DIR__."/../../../../../App/config/{$name}");
             return $config;
         }
     }
 }
+
 
 if (! function_exists('auth')) {
 
@@ -115,7 +116,6 @@ if (! function_exists('arrayToObject')) {
         }
     }
 }
-
 
 if (! function_exists('objectToArray')) {
 
