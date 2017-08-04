@@ -1,6 +1,7 @@
 <?php
 namespace Cac\Controller;
 
+use Cac\Support\Cache;
 use Cac\TwigHelper\TwigFunction;
 
 class Action {
@@ -33,8 +34,6 @@ class Action {
 
     private function init($reload)
     {
-        $this->setFolder(config('app.layout.folder'));
-
         $this->twig   = new \Twig_Environment($this->twig,
             ['cache'       => config('app.layout.cache'),
              'auto_reload' => $reload]);
@@ -51,6 +50,16 @@ class Action {
 
     public function render($action,array $vars = [],$reload = true)
     {
+        if(strpos($action, ':'))
+        {
+            $array = explode(':',$action);
+            $action = end($array);
+            $this->setFolder(Cache::get(prev($array)));
+        }
+        else
+        {
+            $this->setFolder(config('app.layout.folder'));
+        }
         $this->init($reload);
         $action = str_replace(".","/",$action);
         return  $this->twig->render($action.config('app.layout.extension'), $vars);
