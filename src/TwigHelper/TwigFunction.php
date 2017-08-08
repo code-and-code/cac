@@ -29,9 +29,9 @@ class TwigFunction extends \Twig_Extension {
     {
         if($this->getGuest())
         {
-            return auth($name);
+            return 'NULL';
         }
-        return 'NULL';
+        return auth($name);
     }
 
     public function getGuest()
