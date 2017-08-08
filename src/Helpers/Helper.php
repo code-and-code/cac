@@ -222,6 +222,15 @@ if (! function_exists('redirect')) {
     }
 }
 
+if (! function_exists('assets')) {
+
+    function assets($src = null) {
+
+        $url = config('app.url');
+        return "$url/assets/".$src;
+    }
+}
+
 if (! function_exists('dd')) {
 
     function dd($data) {

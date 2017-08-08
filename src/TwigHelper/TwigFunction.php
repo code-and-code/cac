@@ -20,17 +20,18 @@ class TwigFunction extends \Twig_Extension {
             new \Twig_SimpleFunction('limit', [$this, 'getLimit']),
             new \Twig_SimpleFunction('hasErrors', [$this, 'getHasErrors']),
             new \Twig_SimpleFunction('hasMessages', [$this, 'getHasMessages']),
-            new \Twig_SimpleFunction('display', [$this, 'getDisplay'])
+            new \Twig_SimpleFunction('display', [$this, 'getDisplay']),
+            new \Twig_SimpleFunction('assets', [$this, 'getAssets'])
         ];
     }
 
     public function getAuth($name = null)
     {
-         if($this->getGuest())
-         {
-             return auth($name);
-         }
-         return 'NULL';
+        if($this->getGuest())
+        {
+            return auth($name);
+        }
+        return 'NULL';
     }
 
     public function getGuest()
@@ -52,16 +53,21 @@ class TwigFunction extends \Twig_Extension {
 
     public function getHasErrors()
     {
-       return hasErrors();
+        return hasErrors();
     }
 
     public function getHasMessages()
     {
-       return hasMessages();
+        return hasMessages();
     }
 
     public function getDisplay()
     {
         return display();
+    }
+
+    public function getAssets($src)
+    {
+        return assets($src);
     }
 }

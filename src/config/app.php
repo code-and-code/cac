@@ -1,13 +1,17 @@
 <?php
 
 return [
-    'public'    => false,
+    'public'   => false,
+    'url'      => 'localhost',
     'timezone' => 'UTC',
 
-    'database' => [ 'host'     => '127.0.0.1',
-        'dbname'   => 'hotspot',
-        'username' => 'root',
-        'password' =>  ''
+    'database' => [
+
+        'mysql' => [ 'host'    => '127.0.0.1',
+            'dbname'   => '',
+            'username' => '',
+            'password' =>  ''
+        ]
     ],
 
     'layout' =>  [ 'folder'     => '../App/views/',
@@ -25,8 +29,8 @@ return [
 
     ],
     'log'  => [ 'file' => 'main.log',
-               'folder' => '../storage/log',
-    ]
+                'folder' => '../storage/log',
+    ],
     
      'providers'=> [
                    
