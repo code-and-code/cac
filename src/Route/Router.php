@@ -10,10 +10,11 @@ class Router {
 
     public static function route($pattern) {
 
-        $change = str_replace('$var', '\d+', $pattern['route']);
+        $change = str_replace('$var', '(\w+)', $pattern['route']);
         $key    = '/^' . str_replace('/', '\/', $change) . '$/';
         self::$routes[$key] = arrayToObject($pattern);
     }
+
 
     public static function get($pattern)
     {
