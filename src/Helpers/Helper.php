@@ -72,9 +72,9 @@ if (! function_exists('guest')) {
 
         if(isset($_SESSION['auth']))
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }
 
