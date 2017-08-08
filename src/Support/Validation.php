@@ -33,35 +33,28 @@ class Validation
     {
         $errors = 0;
 
-        if($class instanceof Model)
-        {
-            if(property_exists($class,'requested')) {
+        if(property_exists($class,'requested')) {
 
-                foreach ($attributes as $key => $attribute) {
+            foreach ($attributes as $key => $attribute) {
 
-                    if (in_array($key, $class->requested)) {
+                if (in_array($key, $class->requested)) {
 
-                        if(empty($attribute))
-                        {
-                            alert('error',"o campo {$key} é obrigatório");
-                            $errors++;
-                        }
+                    if(empty($attribute))
+                    {
+                        alert('error',"o campo {$key} é obrigatório");
+                        $errors++;
                     }
                 }
-
-                if($errors > 0)
-                {
-                    throw new ValidationException('Erro de validação');
-                }
             }
-            else
+
+            if($errors > 0)
             {
-                throw new ValidationException("Compos REQUIRIDOS,não foi configurado no CLASS: ".get_class($class));
+                throw new ValidationException('Erro de validação');
             }
         }
         else
         {
-            throw new ValidationException(get_class($class)."Não uma ESTANCIA de MODEL");
+            throw new ValidationException("Compos REQUIRIDOS,não foi configurado no CLASS: ".get_class($class));
         }
     }
 }
